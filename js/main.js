@@ -319,6 +319,55 @@
     }
   }
 
+  /* ----------------------------- Auto-actualización -------------------- */
+  /* Cada deploy regenera version.json con el commit publicado (ver
+     .github/workflows/deploy.yml). La página lo consulta cada tanto y, si
+     cambió, se recarga sola para mostrar la última versión — pero espera si
+     estás completando el formulario, para no borrar tu pedido. */
+  (function autoRefresh() {
+    const POLL_MS = 60000;
+    let current = null;        // versión que se está viendo
+    let pendingReload = false;
+
+    const fetchVersion = async () => {
+      try {
+        const res = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data && data.commit ? data.commit : null;
+      } catch {
+        return null; // sin red o sin archivo (p. ej. abierto como file://)
+      }
+    };
+
+    // No recargamos mientras se escribe, para no perder el pedido en curso.
+    const isBusy = () => {
+      const a = document.activeElement;
+      if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return true;
+      const idea = $("#idea"), nombre = $("#nombre");
+      return Boolean((idea && idea.value.trim()) || (nombre && nombre.value.trim()));
+    };
+
+    const maybeReload = () => {
+      if (pendingReload && !isBusy()) location.reload();
+    };
+
+    const check = async () => {
+      const latest = await fetchVersion();
+      if (!latest) return;
+      if (current === null) { current = latest; return; } // baseline al cargar
+      if (latest !== current) { pendingReload = true; maybeReload(); }
+    };
+
+    check();
+    setInterval(check, POLL_MS);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState !== "visible") return;
+      if (pendingReload) maybeReload(); else check();
+    });
+    document.addEventListener("focusout", maybeReload);
+  })();
+
   /* ----------------------------- Init ---------------------------------- */
   renderFilters();
   renderCatalog();
