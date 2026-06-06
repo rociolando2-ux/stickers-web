@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <radialGradient id="aura" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#ffd9e7"/>
+      <stop offset="45%" stop-color="#ece1f9"/>
+      <stop offset="100%" stop-color="#A6E3C6"/>
+    </radialGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#aura)" stroke="#4a3a33" stroke-width="3"/>
+  <!-- estrella sticker -->
+  <path d="M32 14l5.4 11 12.1 1.7-8.8 8.5 2.1 12L32 51.7 21.2 57.2l2.1-12-8.8-8.5L26.6 25z"
+        fill="#fff0a8" stroke="#4a3a33" stroke-width="3" stroke-linejoin="round"/>
+</svg>
