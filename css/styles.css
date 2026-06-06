@@ -187,14 +187,16 @@ h2 {
 .hero-inner { position: relative; z-index: 2; }
 
 .hero-eyebrow {
-  display: inline-block;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
   font-weight: 600;
   background: var(--white);
   color: var(--espresso);
   padding: .4rem 1rem;
   border-radius: 999px;
   box-shadow: var(--shadow);
-  margin-bottom: 1.4rem;
+  margin: 0 auto 1.4rem;
 }
 
 /* Logotipo 3D estilo retro (recreación del logo) */
