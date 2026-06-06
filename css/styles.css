@@ -22,6 +22,12 @@
   --ink:         #4a3a33;
   --whatsapp:    #25d366;
 
+  /* Loader (blob): menta → durazno, en sintonía con la paleta.
+     Alternativa de marca brillante (turquesa → rosa):
+       --c1: #028db6;  --c2: #e77bb7;  */
+  --c1:          #A6E3C6;
+  --c2:          #ffd5a8;
+
   /* Tipografías */
   --font-display: "Bagel Fat One", system-ui, cursive;
   --font-ui: "Fredoka", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -193,23 +199,41 @@ h2 {
 
 /* Logotipo 3D estilo retro (recreación del logo) */
 .wordmark {
+  position: relative;
+  display: inline-block;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(3.4rem, 15vw, 8rem);
-  line-height: .92;
+  line-height: .9;
   color: var(--mint);
   -webkit-text-stroke: clamp(2px, 0.7vw, 4px) var(--espresso);
+  /* Extrusión 3D más suave (pasos de 1.5px) + sombra de apoyo */
   text-shadow:
+    1.5px 1.5px 0 var(--espresso),
     3px 3px 0 var(--espresso),
+    4.5px 4.5px 0 var(--espresso),
     6px 6px 0 var(--espresso),
+    7.5px 7.5px 0 var(--espresso),
     9px 9px 0 var(--espresso),
-    12px 12px 18px rgba(74,58,51,.25);
+    11px 13px 18px rgba(74,58,51,.28);
   margin: 0 auto;
   text-transform: uppercase;
 }
 .wordmark span { display: block; }
 .wordmark span:nth-child(2) { color: var(--peach); }
 .wordmark span:nth-child(3) { color: var(--pink); }
+
+/* Estrellita sticker que acompaña al logo (eco del favicon) */
+.wordmark-star {
+  position: absolute;
+  top: -.32em; right: -.5em;
+  width: clamp(34px, 8vw, 66px);
+  height: auto;
+  filter: drop-shadow(2px 3px 0 rgba(74,58,51,.22));
+  animation: floaty 5s ease-in-out infinite;
+  animation-delay: .4s;
+  pointer-events: none;
+}
 
 .hero-tagline {
   font-size: clamp(1.1rem, 3vw, 1.5rem);
@@ -504,6 +528,26 @@ a.contact-card:hover { transform: translateY(-6px) rotate(1deg); box-shadow: var
   50%      { box-shadow: 0 12px 24px -6px rgba(37,211,102,.6), 0 0 0 14px rgba(37,211,102,0); }
 }
 
+/* ============================ LOADER DE MARCA (blob) ============================ */
+.page-loader {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1.1rem;
+  background: var(--cream);
+  transition: opacity .45s ease, visibility .45s ease;
+}
+.page-loader.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.blob-loader {
+  width: clamp(96px, 22vw, 140px);
+  height: clamp(96px, 22vw, 140px);
+  animation: blob-spin 8s linear infinite;
+}
+/* Colores del degradado vía CSS (var() no resuelve en atributos de presentación) */
+.blob-loader .blob-stop-1 { stop-color: var(--c1); }
+.blob-loader .blob-stop-2 { stop-color: var(--c2); }
+.loader-label { font-weight: 600; color: var(--espresso-2); font-size: 1.05rem; }
+@keyframes blob-spin { to { transform: rotate(360deg); } }
+
 /* ============================ ANIMACIONES ============================ */
 @keyframes pop-in { from { opacity: 0; transform: scale(.85) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
@@ -553,4 +597,7 @@ a.contact-card:hover { transform: translateY(-6px) rotate(1deg); box-shadow: var
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
+  /* SMIL no se frena con las reglas de arriba: congelamos el morph del blob */
+  .blob-loader { animation: none; }
+  .blob-loader animate { display: none; }
 }
