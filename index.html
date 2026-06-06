@@ -24,6 +24,41 @@
 </head>
 <body>
 
+  <!-- ============================ LOADER DE MARCA ============================ -->
+  <div class="page-loader" id="pageLoader" role="status" aria-live="polite">
+    <svg class="blob-loader" viewBox="0 0 200 200" aria-hidden="true">
+      <defs>
+        <linearGradient id="blobGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" class="blob-stop-1" />
+          <stop offset="1" class="blob-stop-2" />
+        </linearGradient>
+      </defs>
+      <path fill="url(#blobGrad)" transform="translate(100 100)"
+        d="M48,-58C62,-46,72,-31,74,-15C76,1,70,18,60,32C50,46,36,57,19,63C3,69,-15,69,-31,61C-47,53,-61,37,-67,18C-73,-1,-71,-23,-60,-37C-49,-51,-30,-58,-12,-64C7,-70,28,-70,48,-58Z">
+        <animate attributeName="d" dur="2.6s" repeatCount="indefinite" calcMode="spline"
+          keyTimes="0;0.33;0.66;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1"
+          values="M48,-58C62,-46,72,-31,74,-15C76,1,70,18,60,32C50,46,36,57,19,63C3,69,-15,69,-31,61C-47,53,-61,37,-67,18C-73,-1,-71,-23,-60,-37C-49,-51,-30,-58,-12,-64C7,-70,28,-70,48,-58Z;
+                  M52,-62C66,-50,73,-30,73,-11C73,8,66,25,55,40C44,55,29,67,11,71C-7,75,-27,71,-43,61C-59,51,-71,35,-74,17C-77,-1,-71,-21,-60,-36C-49,-51,-33,-61,-15,-66C3,-71,26,-74,52,-62Z;
+                  M44,-54C58,-43,71,-31,75,-15C79,1,74,19,64,33C54,47,39,57,22,63C5,69,-13,71,-30,64C-47,57,-63,41,-69,22C-75,3,-71,-19,-60,-35C-49,-51,-31,-61,-12,-66C8,-71,29,-66,44,-54Z;
+                  M48,-58C62,-46,72,-31,74,-15C76,1,70,18,60,32C50,46,36,57,19,63C3,69,-15,69,-31,61C-47,53,-61,37,-67,18C-73,-1,-71,-23,-60,-37C-49,-51,-30,-58,-12,-64C7,-70,28,-70,48,-58Z" />
+      </path>
+    </svg>
+    <p class="loader-label">Cargando tus stickers… ✨</p>
+  </div>
+  <script>
+    /* Oculta el loader cuando termina de cargar (con tope de seguridad). */
+    (function () {
+      var loader = document.getElementById("pageLoader");
+      if (!loader) return;
+      var hide = function () { loader.classList.add("is-hidden"); };
+      window.addEventListener("load", function () { setTimeout(hide, 300); });
+      setTimeout(hide, 4000); // por si algún recurso tarda demasiado
+      loader.addEventListener("transitionend", function () {
+        if (loader.classList.contains("is-hidden")) loader.remove();
+      });
+    })();
+  </script>
+
   <!-- ============================ HEADER / NAV ============================ -->
   <header class="site-header" id="top">
     <div class="container nav">
@@ -68,6 +103,10 @@
 
       <h1 class="wordmark" id="wordmark">
         <span>Stick</span><span>Your</span><span>Life</span>
+        <svg class="wordmark-star" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M32 14l5.4 11 12.1 1.7-8.8 8.5 2.1 12L32 51.7 21.2 57.2l2.1-12-8.8-8.5L26.6 25z"
+                fill="#fff0a8" stroke="#4a3a33" stroke-width="3.5" stroke-linejoin="round" />
+        </svg>
       </h1>
 
       <p class="hero-tagline" id="heroTagline">Stickers personalizados resistentes al agua 💦</p>
