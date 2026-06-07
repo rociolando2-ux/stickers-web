@@ -167,16 +167,144 @@
   })();
 
   /* ----------------------------- Galería ------------------------------- */
+  const galleryMedia = []; // fotos/videos reales, en orden, para el visor
+  let lbIndex = 0;
+
   (function renderGallery() {
     const grid = $("#galleryGrid");
     SYL.gallery.forEach((g, i) => {
       const item = el("div", "gallery-item");
       item.style.background = pastel(i + 2);
-      item.innerHTML =
-        typeof g === "object" && g.img
-          ? `<img src="${g.img}" alt="Sticker" loading="lazy">`
-          : `<span class="die-cut">${typeof g === "string" ? g : g.emoji || "✨"}</span>`;
+
+      const isVideo = g && typeof g === "object" && g.video;
+      const isImg = g && typeof g === "object" && g.img;
+
+      if (isVideo) {
+        item.classList.add("is-video");
+        const v = el("video");
+        v.src = g.video;
+        v.muted = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.setAttribute("playsinline", ""); // iOS
+        v.setAttribute("aria-hidden", "true");
+        v.preload = "metadata";
+        v.tabIndex = -1;
+        item.appendChild(v);
+        item.insertAdjacentHTML(
+          "beforeend",
+          '<span class="gallery-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></span>'
+        );
+      } else if (isImg) {
+        item.innerHTML = `<img src="${g.img}" alt="Sticker de Stick Your Life" loading="lazy">`;
+      } else {
+        // compatibilidad con emojis sueltos
+        item.innerHTML = `<span class="die-cut">${typeof g === "string" ? g : (g && g.emoji) || "✨"}</span>`;
+      }
+
+      if (isVideo || isImg) {
+        const idx = galleryMedia.length;
+        galleryMedia.push(isVideo ? { type: "video", src: g.video } : { type: "img", src: g.img });
+        item.tabIndex = 0;
+        item.setAttribute("role", "button");
+        item.setAttribute("aria-label", isVideo ? "Ver video en grande" : "Ver foto en grande");
+        const open = () => openLightbox(idx);
+        item.addEventListener("click", open);
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+        });
+      }
+
       grid.appendChild(item);
+    });
+
+    initGalleryAutoplay();
+  })();
+
+  /* Los videos de la galería se reproducen (en silencio) solo cuando están
+     a la vista, y se pausan al salir. Respeta "prefiero menos movimiento". */
+  function initGalleryAutoplay() {
+    const vids = $$("#galleryGrid video");
+    if (!vids.length) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!("IntersectionObserver" in window)) {
+      vids.forEach((v) => v.play && v.play().catch(() => {}));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) en.target.play && en.target.play().catch(() => {});
+          else en.target.pause && en.target.pause();
+        });
+      },
+      { threshold: 0.35 }
+    );
+    vids.forEach((v) => io.observe(v));
+  }
+
+  /* ----------------------------- Visor / lightbox ---------------------- */
+  function lbRender() {
+    const stage = $("#lightboxStage");
+    const m = galleryMedia[lbIndex];
+    stage.innerHTML = "";
+    if (!m) return;
+    if (m.type === "video") {
+      const v = el("video");
+      v.src = m.src;
+      v.controls = true;
+      v.autoplay = true;
+      v.loop = true;
+      v.playsInline = true;
+      v.setAttribute("playsinline", "");
+      stage.appendChild(v);
+      v.play && v.play().catch(() => {});
+    } else {
+      const img = el("img");
+      img.src = m.src;
+      img.alt = "Sticker de Stick Your Life";
+      stage.appendChild(img);
+    }
+  }
+
+  function openLightbox(i) {
+    if (!galleryMedia.length) return;
+    lbIndex = i;
+    lbRender();
+    $("#lightbox").classList.add("open");
+    document.body.classList.add("no-scroll");
+    $("#lightboxClose").focus();
+  }
+
+  function closeLightbox() {
+    const lb = $("#lightbox");
+    if (!lb.classList.contains("open")) return;
+    lb.classList.remove("open");
+    document.body.classList.remove("no-scroll");
+    const clear = () => { $("#lightboxStage").innerHTML = ""; }; // detiene el video
+    const done = () => { clear(); lb.removeEventListener("transitionend", done); };
+    lb.addEventListener("transitionend", done);
+    setTimeout(() => { if (!lb.classList.contains("open")) clear(); }, 350);
+  }
+
+  function lbStep(dir) {
+    if (!galleryMedia.length) return;
+    lbIndex = (lbIndex + dir + galleryMedia.length) % galleryMedia.length;
+    lbRender();
+  }
+
+  (function initLightbox() {
+    const lb = $("#lightbox");
+    if (!lb) return;
+    $("#lightboxClose").addEventListener("click", closeLightbox);
+    $("#lightboxPrev").addEventListener("click", () => lbStep(-1));
+    $("#lightboxNext").addEventListener("click", () => lbStep(1));
+    lb.addEventListener("click", (e) => { if (e.target === lb) closeLightbox(); });
+    document.addEventListener("keydown", (e) => {
+      if (!lb.classList.contains("open")) return;
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") lbStep(-1);
+      else if (e.key === "ArrowRight") lbStep(1);
     });
   })();
 
@@ -236,20 +364,32 @@
     $("#year").textContent = new Date().getFullYear();
   }
 
-  /* ----------------------------- Menú mobile --------------------------- */
+  /* ----------------------------- Menú (mobile + desktop) --------------- */
   (function nav() {
     const toggle = $("#navToggle");
     const links = $("#navLinks");
-    toggle.addEventListener("click", () => {
+    const close = () => {
+      if (!links.classList.contains("open")) return;
+      links.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    };
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation(); // evita que el mismo click dispare "cerrar al tocar fuera"
       const open = links.classList.toggle("open");
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
-    $$("#navLinks a").forEach((a) =>
-      a.addEventListener("click", () => {
-        links.classList.remove("open");
-        toggle.setAttribute("aria-expanded", "false");
-      })
-    );
+    // Al elegir un enlace, se cierra
+    $$("#navLinks a").forEach((a) => a.addEventListener("click", close));
+    // Cerrar al tocar/clickear fuera del menú (mobile y desktop)
+    document.addEventListener("click", (e) => {
+      if (!links.classList.contains("open")) return;
+      if (links.contains(e.target) || toggle.contains(e.target)) return;
+      close();
+    });
+    // Cerrar con la tecla Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+    });
   })();
 
   /* ----------------------------- Scroll reveal ------------------------- */
