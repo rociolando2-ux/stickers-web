@@ -355,8 +355,11 @@ h2 {
   font-size: clamp(3.2rem, 9vw, 4.6rem);
   margin-bottom: .9rem;
   overflow: hidden;
+  padding: .7rem;
 }
-.product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+/* Recortes con transparencia: se ven enteros (como sticker sobre el pastel) */
+.product-thumb img { width: 100%; height: 100%; object-fit: contain; transition: transform .25s; }
+.product:hover .product-thumb img { transform: rotate(-4deg) scale(1.06); }
 .product-thumb .emoji { transition: transform .25s; }
 .product:hover .product-thumb .emoji { transform: rotate(-8deg) scale(1.1); }
 
@@ -634,6 +637,149 @@ a.contact-card:hover { transform: translateY(-6px) rotate(1deg); box-shadow: var
 @keyframes burst {
   0% { transform: translate(0,0) scale(.4) rotate(0); opacity: 1; }
   100% { transform: translate(var(--bx), var(--by)) scale(1.2) rotate(var(--brot)); opacity: 0; }
+}
+
+/* ============================ LOGO EN "MORPHING BLOB" ============================ */
+/* Acento orgánico que muta de forma (border-radius animado, sin SVG).
+   Inspirado en el componente "Morphing Blob", con colores de la marca. */
+.logo-blob {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  padding: clamp(1.6rem, 6vw, 3.4rem) clamp(1.8rem, 7vw, 4rem);
+  isolation: isolate;
+}
+.logo-blob-shape {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, var(--mint) 0%, var(--peach) 55%, var(--pink) 100%);
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  box-shadow: 0 28px 60px -20px rgba(74,58,51,.42), inset 0 0 0 3px rgba(255,255,255,.4);
+  filter: saturate(1.05);
+  animation: blob-morph 9s ease-in-out infinite, blob-tilt 15s ease-in-out infinite;
+}
+@keyframes blob-morph {
+  0%, 100% { border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%; }
+  33%      { border-radius: 67% 33% 41% 59% / 64% 51% 49% 36%; }
+  66%      { border-radius: 38% 62% 56% 44% / 35% 63% 37% 65%; }
+}
+@keyframes blob-tilt { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+.logo-blob .wordmark { position: relative; z-index: 1; }
+.hero-h1 { margin: 0; line-height: 0; position: relative; z-index: 1; }
+.hero-logo {
+  width: clamp(240px, 42vw, 460px);
+  height: auto;
+  filter: drop-shadow(0 12px 18px rgba(74,58,51,.3));
+}
+
+/* ============================ WIZARD (armá tu pedido por pasos) ============================ */
+.wizard-head { margin-bottom: 1.5rem; }
+.wizard-bar { height: 9px; border-radius: 999px; background: var(--lilac-soft); overflow: hidden; }
+.wizard-bar > span {
+  display: block; height: 100%; width: 20%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--mint-deep), var(--mint));
+  transition: width .35s cubic-bezier(.34,1.56,.64,1);
+}
+.wizard-counter { text-align: center; font-size: .85rem; font-weight: 600; color: var(--espresso-2); margin-top: .55rem; }
+.wizard-steps { min-height: 150px; }
+.wizard-step { display: none; animation: pop-in .35s both; }
+.wizard-step.is-active { display: block; }
+.wizard-nav { display: flex; gap: .8rem; justify-content: space-between; margin-top: 1.4rem; }
+.wizard-nav .btn { flex: 1; }
+.btn[disabled], .btn:disabled { opacity: .45; cursor: not-allowed; filter: grayscale(.25); }
+.btn[disabled]:hover, .btn:disabled:hover { transform: none; box-shadow: var(--shadow); }
+
+/* ============================ MINI-JUEGO (arrastrar a la silueta) ============================ */
+.game { display: grid; gap: 1.6rem; }
+.game-targets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+  gap: 1rem;
+}
+.game-slot {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  box-shadow: var(--shadow);
+  display: grid; place-items: center;
+  border: 2px dashed rgba(74,58,51,.28);
+  transition: border-color .2s, background .2s, transform .2s;
+}
+.game-slot .silhouette { width: 70%; height: 70%; object-fit: contain; filter: brightness(0); opacity: .13; pointer-events: none; }
+.game-slot.over { border-color: var(--mint-deep); background: var(--mint); transform: scale(1.04); }
+.game-slot.solved { border-style: solid; border-color: var(--mint-deep); background: #eafaf2; }
+.game-slot.solved .silhouette { display: none; }
+.game-slot .placed { width: 86%; height: 86%; object-fit: contain; animation: pop-in .4s both;
+  filter: drop-shadow(1.5px 1.5px 0 #fff) drop-shadow(-1.5px -1.5px 0 #fff) drop-shadow(1.5px -1.5px 0 #fff) drop-shadow(-1.5px 1.5px 0 #fff) drop-shadow(0 6px 7px rgba(74,58,51,.22)); }
+.game-tray {
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
+  min-height: 96px; padding: 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--cream);
+  box-shadow: inset 0 0 0 2px rgba(74,58,51,.07);
+}
+.game-piece {
+  width: clamp(64px, 13vw, 96px); height: clamp(64px, 13vw, 96px);
+  display: grid; place-items: center;
+  cursor: grab; touch-action: none; user-select: none;
+  transition: transform .15s;
+}
+.game-piece img {
+  width: 100%; height: 100%; object-fit: contain;
+  pointer-events: none; -webkit-user-drag: none; user-select: none;
+  filter:
+    drop-shadow(1.5px 1.5px 0 #fff) drop-shadow(-1.5px -1.5px 0 #fff)
+    drop-shadow(1.5px -1.5px 0 #fff) drop-shadow(-1.5px 1.5px 0 #fff)
+    drop-shadow(0 6px 7px rgba(74,58,51,.22));
+}
+.game-piece:hover { transform: scale(1.08) rotate(-3deg); }
+.game-piece.dragging { cursor: grabbing; z-index: 80; transition: none; }
+.game-piece.dropped { display: none; }
+.game-bar { display: flex; align-items: center; justify-content: center; gap: 1.2rem; margin-top: 1.6rem; flex-wrap: wrap; }
+.game-status { font-weight: 600; color: var(--espresso); }
+.game.done ~ .game-bar .game-status,
+.game-status.win { color: var(--mint-deep); }
+
+/* ============================ REELS ============================ */
+.reels-grid { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; }
+.reel-card {
+  position: relative;
+  width: clamp(220px, 30vw, 300px);
+  aspect-ratio: 9 / 16;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: #000;
+  cursor: pointer;
+  transition: transform .2s;
+}
+.reel-card:hover { transform: translateY(-6px) rotate(-1deg); }
+.reel-card:focus-visible { outline: 3px solid var(--mint-deep); outline-offset: 3px; }
+.reel-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.reel-badge {
+  position: absolute; left: 10px; top: 10px;
+  display: inline-flex; align-items: center; gap: .35rem;
+  background: rgba(40,28,24,.6); color: #fff;
+  font-size: .75rem; font-weight: 600;
+  padding: .3rem .7rem; border-radius: 999px;
+  pointer-events: none;
+}
+.reel-mute {
+  position: absolute; right: 10px; bottom: 10px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(40,28,24,.6); color: #fff;
+  display: grid; place-items: center;
+  transition: background .15s, transform .15s;
+}
+.reel-mute:hover { background: rgba(40,28,24,.85); transform: scale(1.08); }
+
+@media (max-width: 600px) {
+  .game-targets { grid-template-columns: repeat(3, 1fr); }
+  .reel-card { width: min(70vw, 240px); }
+  .wizard-nav { flex-wrap: wrap; }
 }
 
 /* ============================ RESPONSIVE ============================ */
