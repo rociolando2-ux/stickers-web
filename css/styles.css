@@ -666,6 +666,12 @@ a.contact-card:hover { transform: translateY(-6px) rotate(1deg); box-shadow: var
 }
 @keyframes blob-tilt { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 .logo-blob .wordmark { position: relative; z-index: 1; }
+.hero-h1 { margin: 0; line-height: 0; position: relative; z-index: 1; }
+.hero-logo {
+  width: clamp(240px, 42vw, 460px);
+  height: auto;
+  filter: drop-shadow(0 12px 18px rgba(74,58,51,.3));
+}
 
 /* ============================ WIZARD (armá tu pedido por pasos) ============================ */
 .wizard-head { margin-bottom: 1.5rem; }
