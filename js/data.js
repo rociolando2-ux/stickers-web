@@ -96,9 +96,38 @@ const SYL = {
   },
 
   /* ----------------------------- GALERÍA --------------------------------
-     Placeholders con emoji. Para usar fotos reales, agregá { img: "..." }.
+     Fotos y videos reales de los stickers. Cada item puede ser:
+       { img: "assets/stickers/archivo.webp" }    -> una foto
+       { video: "assets/stickers/archivo.mp4" }   -> un video (se reproduce
+                                                      en silencio y en bucle)
+     Para sumar más, copiá una línea y cambiá la ruta. Tocá una imagen/video
+     en el sitio para verla en grande.
      --------------------------------------------------------------------- */
-  gallery: ["🐶", "🐱", "🧉", "🌈", "🍓", "🪴", "⭐", "💖"],
+  gallery: [
+    { img: "assets/stickers/613631416_18080984384585773_4096998826846672114_n.webp" },
+    { img: "assets/stickers/613652575_18080984147585773_3307648246962913521_n.webp" },
+    { img: "assets/stickers/621377445_18082223702585773_1653489531585223048_n.webp" },
+    { img: "assets/stickers/621438463_18082223684585773_8864590651044056781_n.webp" },
+    { video: "assets/stickers/AQOq6DZFq5fdsrEQ8P0iKGqkevr1G03PkqA8MCVYryezZVrA_dKDyq4GCM7R606qtB2nQS9p1ePVfztGYS-bDHpi6h6qnHhXYNEG8Fw.mp4" },
+    { img: "assets/stickers/621721017_18082223675585773_229522009255610656_n.webp" },
+    { img: "assets/stickers/621773914_18082223714585773_5786363395387612278_n.webp" },
+    { img: "assets/stickers/622393419_18082223465585773_8487853056861630923_n.webp" },
+    { img: "assets/stickers/622579488_18082223693585773_4393377786749890752_n.webp" },
+    { img: "assets/stickers/623540937_18082223666585773_8381284011273995570_n.webp" },
+    { img: "assets/stickers/639768288_18085816556585773_8916189002647091332_n.webp" },
+    { img: "assets/stickers/640384806_18085816823585773_8707246916963487065_n.webp" },
+    { img: "assets/stickers/640516942_18085816856585773_6336792455344119519_n.webp" },
+    { video: "assets/stickers/AQPC5P4_6x101qA-W52oGLnHkyYp0yIFSDB774vdt3r6fNlNRLIYsT9SX7-BmyiYoRyPrKKAsyVOYgoPhjrq04HbeT827QOJx1Qrork.mp4" },
+    { img: "assets/stickers/641292318_18085816844585773_8796271499262057096_n.webp" },
+    { img: "assets/stickers/642418567_18085816835585773_4453736110022946296_n.webp" },
+    { img: "assets/stickers/647440993_18087005549585773_5886293999029672902_n.webp" },
+    { img: "assets/stickers/647516459_18087005531585773_1592366052198970069_n.webp" },
+    { img: "assets/stickers/648308298_18087006092585773_8696961360178370452_n.webp" },
+    { img: "assets/stickers/649214319_18087005540585773_621526766637841665_n.webp" },
+    { img: "assets/stickers/649393137_18087006113585773_1058222218537117983_n.webp" },
+    { img: "assets/stickers/650030215_18087006083585773_5999174198647778322_n.webp" },
+    { img: "assets/stickers/658530242_18089487554585773_8543247059023360242_n.webp" },
+  ],
 
   /* ----------------------------- PREGUNTAS FRECUENTES -------------------- */
   faq: [
