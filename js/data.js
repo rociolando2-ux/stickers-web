@@ -29,7 +29,7 @@ const SYL = {
 
     // ⚠️ Número de WhatsApp OFUSCADO (ver instrucciones arriba). Estos valores
     // son de ejemplo: reemplazalos por los de TU número con el snippet de arriba.
-    waEnc: ["NTQ5MjkxNQ==", "MDAwMDAw"],
+    waEnc: ["MzE2MjYyNQ==", "MzU0Mg=="],
     whatsappDisplay: "WhatsApp",
 
     instagram: "stickyourlifebb", // sin @
