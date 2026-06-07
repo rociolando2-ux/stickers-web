@@ -156,7 +156,7 @@ h2 {
   line-height: 1;
   letter-spacing: .5px;
   text-transform: uppercase;
-  color: var(--mint-deep);
+  color: var(--mint);
   white-space: nowrap;
   -webkit-text-stroke: 1.3px var(--espresso);
   text-shadow:
@@ -165,6 +165,8 @@ h2 {
     3px 3px 0 var(--espresso),
     4px 5px 6px rgba(74,58,51,.28);
 }
+.brand .brand-logo span:nth-child(2) { color: var(--peach); }  /* Your → naranja */
+.brand .brand-logo span:nth-child(3) { color: var(--pink); }   /* Life → rosa */
 @media (max-width: 480px) {
   .brand .brand-logo { font-size: 1.1rem; -webkit-text-stroke-width: 1px; }
 }
