@@ -27,9 +27,9 @@ const SYL = {
     subtitle:
       "Convertí lo que más te gusta en stickers troquelados, brillantes y de larga duración. Hechos a mano en Bahía Blanca.",
 
-    // ⚠️ Número de WhatsApp OFUSCADO (ver instrucciones arriba). Estos valores
-    // son de ejemplo: reemplazalos por los de TU número con el snippet de arriba.
-    waEnc: ["MzE2MjYyNQ==", "MzU0Mg=="],
+    // Número de WhatsApp del negocio, OFUSCADO (base64, en 2 partes) para que
+    // los bots/scrapers no lo levanten. Para cambiarlo, usá el snippet de arriba.
+    waEnc: ["NTQ5MjkxNA==", "MTk2MTUx"],
     whatsappDisplay: "WhatsApp",
 
     instagram: "stickyourlifebb", // sin @
